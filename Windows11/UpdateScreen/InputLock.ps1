@@ -1,7 +1,6 @@
 <#
 .SYNOPSIS
-    InputLock.ps1 - Sperrt alles, entsperrt sauber bei STRG + ALT + SHIFT + Q
-    und gibt die Tasten kontrolliert frei, bevor es sich schließt.
+    InputLock.ps1 - Erweiterte Entsperrung mit kompletter Tasten-Bereinigung.
 #>
 
 Add-Type -AssemblyName System.Windows.Forms
@@ -61,15 +60,22 @@ namespace Venice.Blocker
 
         public static void ReleaseAndStop()
         {
-            // 1. Erst die Hooks entfernen (Tastatur & Maus wieder freigeben)
+            // 1. Hooks sofort entfernen
             if (_kbHook != IntPtr.Zero) { UnhookWindowsHookEx(_kbHook); _kbHook = IntPtr.Zero; }
             if (_msHook != IntPtr.Zero) { UnhookWindowsHookEx(_msHook); _msHook = IntPtr.Zero; }
 
-            // 2. Dann aktiv das Loslassen der Tasten an Windows senden
-            keybd_event(0x10, 0, KEYEVENTF_KEYUP, 0); // Shift
-            keybd_event(0x11, 0, KEYEVENTF_KEYUP, 0); // Ctrl
-            keybd_event(0x12, 0, KEYEVENTF_KEYUP, 0); // Alt
-            keybd_event(0x51, 0, KEYEVENTF_KEYUP, 0); // Q
+            // 2. Alle Links/Rechts-Varianten von Modifikatoren aktiv "loslassen"
+            byte[] keysToRelease = { 
+                0x10, 0xA0, 0xA1, // Shift (General, Left, Right)
+                0x11, 0xA2, 0xA3, // Ctrl (General, Left, Right)
+                0x12, 0xA4, 0xA5, // Alt (General, Left, Right)
+                0x51              // Q
+            };
+
+            foreach (byte vk in keysToRelease)
+            {
+                keybd_event(vk, 0, KEYEVENTF_KEYUP, 0);
+            }
         }
 
         private static IntPtr KbProc(int nCode, IntPtr wParam, IntPtr lParam)
@@ -100,7 +106,7 @@ namespace Venice.Blocker
                     }
                 }
             }
-            return (IntPtr)1; // Blockiert alles
+            return (IntPtr)1;
         }
 
         private static IntPtr MsProc(int nCode, IntPtr wParam, IntPtr lParam)
@@ -121,16 +127,9 @@ namespace Venice.Blocker
 
 [Venice.Blocker.GlobalBlocker]::Start()
 
-# Warten, bis die Tastenkombination gedrückt wird
 while (-not [Venice.Blocker.GlobalBlocker]::UnlockRequested) {
     Start-Sleep -Milliseconds 50
 }
 
-# Ablauf beim Entsperren der Reihe nach:
-# 1. Tasten & Maus entsperren und Signale senden
 [Venice.Blocker.GlobalBlocker]::ReleaseAndStop()
-
-# 2. Kurze Gedenksekunde, damit Windows die Freigabe verarbeitet
 Start-Sleep -Milliseconds 250
-
-# 3. Skript schließt sich nun von selbst und gibt das Signal an Python weiter
