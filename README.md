@@ -8,33 +8,44 @@ their target platform and purpose.
 ```text
 skripts/
 ├── README.md
+├── Linux/
+│   └── cozy_amber_theme.zip
 └── Windows11/
-    └── UpdateScreen/
-        ├── FakeUpdate.py
-        ├── ImperialMarch.ps1
-        └── InputLock.ps1
-
+    └── UpdateScreen.zip
 ```
 
-## `Windows11/`
+## `Windows11/UpdateScreen.zip`
 
-### `UpdateScreen/`
-
-A Windows demo that displays a simulated update screen, plays music in the
-background, and temporarily blocks keyboard and mouse input. It does not
+A Windows demo with a simulated update screen and accompanying music. The
+keyboard and mouse are temporarily locked while the demo runs. It does not
 install updates or change Windows system settings.
 
-Run `FakeUpdate.py` with Python on Windows to start the demo. Press
-**Ctrl+Alt+Shift+Q** to restore input and close it. Use only on a computer you
-own or are authorized to test.
+After extracting the archive:
 
-- **`FakeUpdate.py`** — Creates the full-screen update-style window and starts
-  the audio and input-lock PowerShell scripts. Its percentage indicator is
-  simulated.
-- **`ImperialMarch.ps1`** — Synthesizes and plays the Imperial March. It can
-  also be run separately; by default, it repeats until stopped. The
-  `Wiederholungen` parameter controls the number of plays, and `Tempo` adjusts
-  the speed.
-- **`InputLock.ps1`** — Blocks keyboard and mouse input while the demo is
-  running, except for the **Ctrl+Alt+Shift+Q** exit shortcut. It releases the
-  input hooks when that shortcut is pressed.
+- **`FakeUpdate.py`** — Starts the simulated update screen and the related
+  PowerShell scripts. The percentage indicator is simulated.
+- **`ImperialMarch.ps1`** — Synthesizes and plays the music; it can also be run
+  separately.
+- **`InputLock.ps1`** — Locks the keyboard and mouse while the demo is running.
+  Press **Ctrl+Alt+Shift+Q** to release the input lock and close the demo.
+
+Run only on a computer you own or are explicitly authorized to use.
+
+## `Linux/cozy_amber_theme.zip`
+
+An installation package for a warm Cozy Amber design for Xfce. It configures
+components including the GTK theme, window decorations, icons, panel,
+terminal, and shell. Run `install.sh` to install the design or `uninstall.sh`
+to restore the previous setup.
+
+After extracting the archive:
+
+- **`install.sh`**, **`uninstall.sh`**, **`verify.sh`** — Install, remove, and
+  verify the design.
+- **`config/`** — Central color palette and settings.
+- **`lib/`** — Shared helper functions used by the installation scripts.
+- **`scripts/`** — Individual setup steps for the desktop components.
+- **`templates/`** — Templates for generated configuration files.
+- **`tools/`** — Utilities for generating, adjusting, and checking files.
+- **`cozy-amber-xfce/`** — Directory for Xfce theme files.
+- **`README.md`** — Detailed package and usage information.
