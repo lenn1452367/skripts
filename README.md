@@ -8,13 +8,12 @@ their target platform and purpose.
 ```text
 skripts/
 ├── README.md
-├── Windows11/
-│   └── UpdateScreen/
-│       ├── FakeUpdate.py
-│       ├── ImperialMarch.ps1
-│       └── InputLock.ps1
-└── Zielbeschreibungstexte_skripte/
-    └── FakeUpdateMitMusikwiedergabe.txt
+└── Windows11/
+    └── UpdateScreen/
+        ├── FakeUpdate.py
+        ├── ImperialMarch.ps1
+        └── InputLock.ps1
+
 ```
 
 ## `Windows11/`
